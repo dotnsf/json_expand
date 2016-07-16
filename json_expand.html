@@ -1,0 +1,109 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>JSON expander</title>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+var cnt = 0;
+$(function(){
+ $('#btn').click( function(){
+  var body = $('#body').val();
+  var json = JSON.parse( body );
+  
+  cnt = 0;
+  
+  var html = parseAsUnknown( json );
+  $('#expand').html( html );
+ });
+});
+
+function parseAsUnknown( thing ){
+ var line = "";
+ if( isArray( thing ) ){
+  line = '<div><a href="javascript:void(0)" id="category_' + ( ++ cnt ) + '" onclick="show_layer(\'' + cnt + '\');">'
+   + '<b id="b_' + cnt + '" class="array">[...]</b></a></div>'
+   + '<div id="layer_' + cnt + '" style="display:none; position:relative;" class="close">'
+   + '<blockquote>';
+   var tmp = [];
+   var tmpcnt = 0;
+   for( var i = 0; i < thing.length; i ++ ){
+    tmp[tmpcnt++] = parseAsUnknown( thing[i] );
+   }
+   line += tmp.join( ',<br/>' );
+   line += '</blockquote>]<br/></div><p/>\n';
+ }else if( isObject( thing ) ){
+  line = '<div><a href="javascript:void(0)" id="category_' + ( ++ cnt ) + '" onclick="show_layer(\'' + cnt + '\');">'
+   + '<b id="b_' + cnt + '" class="object">{...}</b></a></div>'
+   + '<div id="layer_' + cnt + '" style="display:none; position:relative;" class="close">'
+   + '<blockquote>';
+  var tmp = [];
+  var tmpcnt = 0;
+  for( var key in thing ){
+   if( thing.hasOwnProperty( key ) ){
+    var val = thing[key];
+    tmp[tmpcnt++] = '"' + key + '": ' + parseAsUnknown( val );
+   }
+  }
+  line += tmp.join( ',<br/>' );
+  line += '</blockquote>}<br/></div><p/>\n';
+ }else if( isString( thing ) ){
+  line = '"' + thing + '"';
+ }else{
+  line = thing;
+ }
+ 
+ return line;
+}
+
+function show_layer( cat ){
+ var bID = document.getElementById('b_'+cat);
+ var objID = document.getElementById('layer_'+cat);
+ if( objID.className == 'close' ){
+  objID.style.display = 'block';
+  objID.className = 'open';
+  
+  if( bID.className == 'array' ){
+   bID.innerHTML = '[';
+  }else{
+   bID.innerHTML = '{';
+  }
+ }else{
+  objID.style.display = 'none';
+  objID.className = 'close';
+  
+  if( bID.className == 'array' ){
+   bID.innerHTML = '[...]';
+  }else{
+   bID.innerHTML = '{...}';
+  }
+ }
+}
+
+function isArray( item ){
+  return Object.prototype.toString.call( item ) === '[object Array]';
+}
+
+function isObject( item ){
+  return typeof item === 'object' && item !== null && !isArray( item );
+}
+
+function isString( item ){
+  return ( typeof( item ) === 'string' );
+}
+</script>
+<style type="text/css">
+a{
+ text-decoration: none;
+}
+</style>
+</head>
+<body>
+<textarea id="body" rows="10" cols="80">{"name":"name1","value":123}</textarea>
+<br/>
+<input type="button" id="btn" value="Expand"/>
+<hr/>
+<div id="expand"></div>
+</body>
+</html>
