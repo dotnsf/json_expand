@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <title>JSON expander</title>
-<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
 <script>
 var cnt = 0;
 $(function(){
@@ -97,12 +97,18 @@ function isString( item ){
 a{
  text-decoration: none;
 }
+
+textarea{
+ width:100%; height:30%
+}
 </style>
 </head>
 <body>
-<textarea id="body" rows="10" cols="80">{"name":"name1","value":123}</textarea>
+<textarea id="body">
+{"name1":"value1","name2":"value2","name3":3,"users":[{"user1_id":"admin","user1_data":["admin","管理人","かんりにん","3100","","9",""]},{"user2_id":"demo","user2_data":["demo","デモ","でも","3101","","0",""]}]}
+</textarea>
 <br/>
-<input type="button" id="btn" value="Expand"/>
+<div style="text-align: center;"><input type="button" id="btn" value="Expand"/></div>
 <hr/>
 <div id="expand"></div>
 </body>
