@@ -9,13 +9,18 @@
 var cnt = 0;
 $(function(){
  $('#btn').click( function(){
-  var body = $('#body').val();
-  var json = JSON.parse( body );
+  $('#expand').html( '' );
+  try{
+   var body = $('#body').val();
+   var json = JSON.parse( body );
   
-  cnt = 0;
+   cnt = 0;
   
-  var html = parseAsUnknown( json );
-  $('#expand').html( html );
+   var html = parseAsUnknown( json );
+   $('#expand').html( html );
+  }catch( e ){
+   $('#expand').html( e );
+  }
  });
 });
 
